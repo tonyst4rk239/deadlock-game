@@ -12,6 +12,8 @@
       --accent-green: #2a9d8f;
       --accent-yellow: #e9c46a;
       --accent-blue: #457b9d;
+      --accent-purple: #7209b7;
+      --accent-orange: #e76f51;
       --text-main: #edf2f4;
       --text-muted: #8d99ae;
       --border-color: #2b2d42;
@@ -26,18 +28,18 @@
       align-items: center;
       padding-bottom: 20px;
       border-bottom: 1px solid var(--border-color);
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
 
     .logo { font-size: 1.8rem; font-weight: 800; letter-spacing: 2px; color: var(--accent-red); }
     .logo span { color: var(--text-main); font-weight: 300; font-size: 1.1rem; margin-left: 10px; }
 
-    .nav-tabs { display: flex; gap: 10px; margin-bottom: 25px; }
+    .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
     .nav-btn {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
       color: var(--text-muted);
-      padding: 10px 20px;
+      padding: 10px 18px;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
@@ -47,6 +49,32 @@
       background: var(--accent-red);
       color: white;
       border-color: var(--accent-red);
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+      background: #141624;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+    .filter-btn {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background: #2b2d42;
+      color: white;
     }
 
     .tab-content { display: none; }
@@ -97,7 +125,7 @@
     /* Card Visual Box */
     .cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 20px;
     }
 
@@ -109,12 +137,28 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      height: 340px;
+      height: 350px;
       box-shadow: 0 8px 16px rgba(0,0,0,0.4);
       position: relative;
     }
-    .card-preview.overlord { border-color: var(--accent-red); }
-    .card-preview.human { border-color: var(--accent-blue); }
+
+    /* Badges por tipo oficial */
+    .type-Defensa { border-color: var(--accent-blue) !important; }
+    .badge-Defensa { background: var(--accent-blue) !important; color: white; }
+
+    .type-Ataque { border-color: var(--accent-red) !important; }
+    .badge-Ataque { background: var(--accent-red) !important; color: white; }
+
+    .type-Robo { border-color: var(--accent-purple) !important; }
+    .badge-Robo { background: var(--accent-purple) !important; color: white; }
+
+    .type-Recursos { border-color: var(--accent-green) !important; }
+    .badge-Recursos { background: var(--accent-green) !important; color: white; }
+
+    .type-Condiciones, .type-Condicion_Global, .type-Condicion_Ataque, .type-Condicion_Mejora {
+      border-color: var(--accent-orange) !important;
+    }
+    .badge-Condicion { background: var(--accent-orange) !important; color: white; }
 
     .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
     .card-id { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); }
@@ -151,6 +195,7 @@
       border-left: 3px solid var(--accent-yellow);
       flex-grow: 1;
       margin-bottom: 10px;
+      line-height: 1.35;
     }
 
     .card-footer {
@@ -166,13 +211,13 @@
     /* Print View */
     @media print {
       body { background: white; color: black; padding: 0; }
-      header, .nav-tabs, .form-container, button { display: none !important; }
+      header, .nav-tabs, .filter-bar, .form-container, button { display: none !important; }
       .tab-content { display: block !important; }
       .cards-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
       .card-preview {
         background: white;
         color: black;
-        border: 1.5px dashed black;
+        border: 1.5px dashed black !important;
         box-shadow: none;
         page-break-inside: avoid;
         height: 310px;
@@ -185,26 +230,40 @@
 <body>
 
   <header>
-    <div class="logo">DEADLOCK <span>Card Manager & Prototype Hub</span></div>
+    <div class="logo">DEADLOCK <span>Card Manager & Prototipo</span></div>
     <div>
-      <button class="nav-btn" onclick="window.print()" style="background: var(--accent-blue); color: white;">🖨️ Imprimir Cartas (Hoja de Recorte)</button>
+      <button class="nav-btn" onclick="window.print()" style="background: var(--accent-blue); color: white;">🖨️ Imprimir Hoja de Cartas</button>
     </div>
   </header>
 
   <div class="nav-tabs">
     <button class="nav-btn active" onclick="showTab('human-tab')">🃏 Mazo Humanos (<span id="count-human">0</span>)</button>
-    <button class="nav-btn" onclick="showTab('overlord-tab')">🩸 Mazo Overlord (<span id="count-overlord">0</span>)</button>
+    <button class="nav-btn" onclick="showTab('overlord-tab')">🩸 Mazo Condiciones Overlord (<span id="count-overlord">0</span>)</button>
     <button class="nav-btn" onclick="showTab('create-tab')">➕ Agregar Nueva Carta</button>
     <button class="nav-btn" onclick="showTab('sim-tab')">🐍 Simulación de Balance</button>
   </div>
 
   <!-- TAB: MAZO HUMANOS -->
   <div id="human-tab" class="tab-content active">
+    <div class="filter-bar">
+      <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-right: 5px;">Filtrar por tipo:</span>
+      <button class="filter-btn active" onclick="filterHumanCards('ALL')">Todos (<span id="f-all">0</span>)</button>
+      <button class="filter-btn" onclick="filterHumanCards('Defensa')">🛡️ Defensa (<span id="f-def">0</span>)</button>
+      <button class="filter-btn" onclick="filterHumanCards('Ataque')">⚔️ Ataque (<span id="f-atk">0</span>)</button>
+      <button class="filter-btn" onclick="filterHumanCards('Robo')">💰 Robo (<span id="f-rob">0</span>)</button>
+      <button class="filter-btn" onclick="filterHumanCards('Recursos')">📦 Recursos (<span id="f-rec">0</span>)</button>
+    </div>
     <div class="cards-grid" id="grid-human"></div>
   </div>
 
   <!-- TAB: MAZO OVERLORD -->
   <div id="overlord-tab" class="tab-content">
+    <div class="filter-bar">
+      <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-right: 5px;">Condiciones del Overlord:</span>
+      <button class="filter-btn active" onclick="filterOverlordCards('ALL')">Todas (<span id="fo-all">0</span>)</button>
+      <button class="filter-btn" onclick="filterOverlordCards('Condicion_Global')">❄️ Global / Clima</button>
+      <button class="filter-btn" onclick="filterOverlordCards('Condicion_Ataque')">🧟 Ataques & Hordas</button>
+    </div>
     <div class="cards-grid" id="grid-overlord"></div>
   </div>
 
@@ -212,12 +271,12 @@
   <div id="create-tab" class="tab-content">
     <div class="form-container">
       <div>
-        <h2 style="margin-bottom: 20px;">Crear Carta de Humanos o Zombie</h2>
+        <h2 style="margin-bottom: 20px;">Crear Carta de Juego</h2>
         <div class="form-group">
           <label>Mazo Destino</label>
           <select id="card-deck" onchange="toggleFormFields()">
-            <option value="human">Facción Humana (Recursos / Acciones / Traición)</option>
-            <option value="overlord">Overlord (Zombie / Clima / Hordas)</option>
+            <option value="human">Facción Humana (4 Tipos: Defensa, Ataque, Robo, Recursos)</option>
+            <option value="overlord">Overlord Zombie (Condiciones)</option>
           </select>
         </div>
 
@@ -227,13 +286,12 @@
         </div>
 
         <div class="form-group">
-          <label>Tipo de Carta</label>
+          <label>Tipo de Carta Oficial</label>
           <select id="card-type" oninput="updateLivePreview()">
-            <option value="Estructura">Estructura / Muralla</option>
-            <option value="Accion">Acción General</option>
-            <option value="Ataque">Ataque</option>
-            <option value="Traicion">Traición / Saqueo</option>
-            <option value="Diplomacia">Diplomacia / Pacto</option>
+            <option value="Defensa">🛡️ Defensa (Murallas, Barricadas, Escudos)</option>
+            <option value="Ataque">⚔️ Ataque (Armas, Trampas, Fuego)</option>
+            <option value="Robo">💰 Robo (Saqueo, Traición, Infiltración)</option>
+            <option value="Recursos">📦 Recursos (Comida, Madera, Piedra, Medicina)</option>
           </select>
         </div>
 
@@ -254,7 +312,7 @@
 
         <div class="form-group">
           <label>Efecto Principal (Texto de Juego)</label>
-          <textarea id="card-effect" rows="2" placeholder="Ej. Absorbe 4 de daño en el próximo ataque nocturno." oninput="updateLivePreview()"></textarea>
+          <textarea id="card-effect" rows="2" placeholder="Ej. Absorbe 3 de daño en el próximo ataque." oninput="updateLivePreview()"></textarea>
         </div>
 
         <div class="form-group">
@@ -271,13 +329,13 @@
       <!-- Live Preview -->
       <div>
         <h3 style="margin-bottom: 20px; color: var(--text-muted);">Vista Previa en Vivo:</h3>
-        <div id="live-card-preview" class="card-preview human" style="max-width: 300px; margin: 0 auto;">
+        <div id="live-card-preview" class="card-preview type-Defensa" style="max-width: 300px; margin: 0 auto;">
           <div class="card-header">
             <div>
               <div class="card-id">NEW-01</div>
               <div class="card-title" id="prev-name">Nombre de Carta</div>
             </div>
-            <span class="badge-type" id="prev-type">Estructura</span>
+            <span class="badge-type badge-Defensa" id="prev-type">Defensa</span>
           </div>
           <div class="card-costs" id="prev-costs">
             <span class="cost-tag">⚡ 1 AP</span>
@@ -305,6 +363,8 @@
   <script>
     let humanCards = [];
     let overlordCards = [];
+    let currentHumanFilter = 'ALL';
+    let currentOverlordFilter = 'ALL';
 
     async function loadCards() {
       try {
@@ -316,6 +376,7 @@
         document.getElementById('count-human').innerText = humanCards.length;
         document.getElementById('count-overlord').innerText = overlordCards.length;
 
+        updateFilterCounts();
         renderHumanGrid();
         renderOverlordGrid();
       } catch (err) {
@@ -323,16 +384,41 @@
       }
     }
 
+    function updateFilterCounts() {
+      document.getElementById('f-all').innerText = humanCards.length;
+      document.getElementById('f-def').innerText = humanCards.filter(c => c.tipo === 'Defensa').length;
+      document.getElementById('f-atk').innerText = humanCards.filter(c => c.tipo === 'Ataque').length;
+      document.getElementById('f-rob').innerText = humanCards.filter(c => c.tipo === 'Robo').length;
+      document.getElementById('f-rec').innerText = humanCards.filter(c => c.tipo === 'Recursos').length;
+      document.getElementById('fo-all').innerText = overlordCards.length;
+    }
+
+    function filterHumanCards(type) {
+      currentHumanFilter = type;
+      document.querySelectorAll('#human-tab .filter-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      renderHumanGrid();
+    }
+
+    function filterOverlordCards(type) {
+      currentOverlordFilter = type;
+      document.querySelectorAll('#overlord-tab .filter-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      renderOverlordGrid();
+    }
+
     function renderHumanGrid() {
       const grid = document.getElementById('grid-human');
-      grid.innerHTML = humanCards.map(c => `
-        <div class="card-preview human">
+      const filtered = currentHumanFilter === 'ALL' ? humanCards : humanCards.filter(c => c.tipo === currentHumanFilter);
+
+      grid.innerHTML = filtered.map(c => `
+        <div class="card-preview type-${c.tipo}">
           <div class="card-header">
             <div>
               <div class="card-id">${c.id || ''}</div>
               <div class="card-title">${c.nombre || ''}</div>
             </div>
-            <span class="badge-type">${c.tipo || ''}</span>
+            <span class="badge-type badge-${c.tipo}">${c.tipo || ''}</span>
           </div>
           <div class="card-costs">
             <span class="cost-tag">⚡ ${c.costo_ap || 1} AP</span>
@@ -352,20 +438,22 @@
 
     function renderOverlordGrid() {
       const grid = document.getElementById('grid-overlord');
-      grid.innerHTML = overlordCards.map(c => `
-        <div class="card-preview overlord">
+      const filtered = currentOverlordFilter === 'ALL' ? overlordCards : overlordCards.filter(c => c.tipo === currentOverlordFilter);
+
+      grid.innerHTML = filtered.map(c => `
+        <div class="card-preview type-${c.tipo}">
           <div class="card-header">
             <div>
               <div class="card-id">${c.id || ''}</div>
               <div class="card-title">${c.nombre || ''}</div>
             </div>
-            <span class="badge-type" style="background: var(--accent-red);">${c.tipo || ''}</span>
+            <span class="badge-type badge-Condicion">${c.tipo ? c.tipo.replace('_', ' ') : 'Condición'}</span>
           </div>
           <div class="card-costs">
             <span class="cost-tag">⚡ ${c.costo_ap || 1} AP</span>
             ${c.requisito_superacion ? `<span class="cost-tag" style="border-color: #e9c46a;">🛡️ ${c.requisito_superacion}</span>` : ''}
           </div>
-          <div class="card-effect" style="border-left-color: var(--accent-red);">${c.efecto || ''}</div>
+          <div class="card-effect" style="border-left-color: var(--accent-orange);">${c.efecto || ''}</div>
           <div class="card-footer">
             <span>${c.descripcion || ''}</span>
             <span>x${c.cantidad_mazo || 1}</span>
@@ -390,22 +478,20 @@
       if (deck === 'human') {
         humanCosts.style.display = 'block';
         typeSelect.innerHTML = `
-          <option value="Estructura">Estructura / Muralla</option>
-          <option value="Accion">Acción General</option>
-          <option value="Ataque">Ataque</option>
-          <option value="Traicion">Traición / Saqueo</option>
-          <option value="Diplomacia">Diplomacia / Pacto</option>
+          <option value="Defensa">🛡️ Defensa (Murallas, Barricadas, Escudos)</option>
+          <option value="Ataque">⚔️ Ataque (Armas, Trampas, Fuego)</option>
+          <option value="Robo">💰 Robo (Saqueo, Traición, Infiltración)</option>
+          <option value="Recursos">📦 Recursos (Comida, Madera, Piedra, Medicina)</option>
         `;
-        prevBox.className = "card-preview human";
+        prevBox.className = "card-preview type-Defensa";
       } else {
         humanCosts.style.display = 'none';
         typeSelect.innerHTML = `
-          <option value="Condicion_Global">Condición Global (Clima/Hambruna)</option>
-          <option value="Invocacion">Invocación de Horda</option>
-          <option value="Ataque_Directo">Ataque Directo / Mordida</option>
-          <option value="Mejora">Mejora / Frenesí</option>
+          <option value="Condicion_Global">❄️ Condición Global (Clima / Hambruna / Sequía)</option>
+          <option value="Condicion_Ataque">🧟 Condición de Ataque / Horda</option>
+          <option value="Condicion_Mejora">⚡ Condición de Mejora / Frenesí</option>
         `;
-        prevBox.className = "card-preview overlord";
+        prevBox.className = "card-preview type-Condiciones";
       }
       updateLivePreview();
     }
@@ -419,10 +505,14 @@
       const qty = document.getElementById('card-qty').value || 1;
 
       document.getElementById('prev-name').innerText = name;
-      document.getElementById('prev-type').innerText = type;
+      document.getElementById('prev-type').innerText = type.replace('_', ' ');
       document.getElementById('prev-effect').innerText = effect;
       document.getElementById('prev-desc').innerText = desc;
       document.getElementById('prev-qty').innerText = "x" + qty;
+
+      const prevBox = document.getElementById('live-card-preview');
+      prevBox.className = `card-preview type-${type}`;
+      document.getElementById('prev-type').className = `badge-type badge-${type}`;
 
       const deck = document.getElementById('card-deck').value;
       let costTags = `<span class="cost-tag">⚡ ${ap} AP</span>`;
@@ -485,7 +575,7 @@
           body: JSON.stringify(payload)
         });
         if (res.ok) {
-          alert("¡Carta guardada exitosamente en la base de datos y CSV!");
+          alert("¡Carta guardada exitosamente!");
           document.getElementById('card-name').value = "";
           document.getElementById('card-effect').value = "";
           document.getElementById('card-desc').value = "";

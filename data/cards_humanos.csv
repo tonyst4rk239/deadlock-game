@@ -1,14 +1,15 @@
 id,nombre,tipo,costo_madera,costo_piedra,costo_comida,costo_medicina,costo_ap,efecto,descripcion,cantidad_mazo
-H01,Valla de Madera,Estructura,2,0,0,0,1,Absorbe 3 de dano de horda,Proteccion basica y rapida para el perimetro,6
-H02,Muro de Piedra Reforzado,Estructura,1,2,0,0,2,Absorbe 6 de dano de horda,Fortificacion pesada para frenar grandes asedios,4
-H03,Puesto de Centinela,Estructura,1,1,0,0,1,+1 a todas las tiradas defensivas de dados,Otorga vision temprana contra emboscadas,3
-H04,Racionamiento Estricto,Accion,0,0,1,0,1,Alimenta a la faccion sin gastar recurso adicional,Permite mitigar penalizaciones por hambruna,5
-H05,Cultivo Hidroponico,Accion,2,0,1,0,2,Genera +1 Comida pasiva por turno durante 3 rondas,Inversion agricola para la supervivencia a medio plazo,3
-H06,Kit de Primeros Auxilios,Accion,0,0,0,2,1,Cura 3 HP o elimina estado de Infeccion,Suministro medico vital para emergencias,4
-H07,Inyeccion Experimental,Accion,0,0,0,1,1,Cura 1 HP y otorga +1 AP el proximo turno,Tratamiento rapido con leve efecto estimulante,3
-H08,Expedicion de Saqueo,Accion,0,0,1,0,1,Roba 3 cartas del mazo de recursos,Busqueda de suministros en zonas de alto riesgo,6
-H09,Emboscada Silenciosa,Ataque,1,0,0,0,1,Reduce en 2 el tamano de una horda entrante,Ataque tactico para frenar el avance zombi,4
-H10,Bomba Casera,Ataque,0,1,0,0,2,Destruye una horda menor y dana al Overlord,Explosivo improvisado de alto impacto,2
-H11,Saqueo Nocturno,Traicion,0,0,0,0,2,Roba 2 recursos al azar de otra faccion vecina,Ruptura de pacto para garantizar provisiones propias,4
-H12,Sabotaje de Muralla,Traicion,0,0,0,0,2,Reduce a la mitad la defensa de un asentamiento rival,Desvia la atencion de la horda hacia otra faccion,2
-H13,Pacto de No Agresion,Diplomacia,0,0,1,0,1,Prohibe el robo mutuo entre dos facciones por 2 turnos,Alianza temporal fragil ante la escasez,3
+H01,Barricada de Madera,Defensa,2,0,0,0,1,Absorbe 3 de dano de hordas o ataques directos,Estructura defensiva basica para perimetro,6
+H02,Muro de Piedra Macizo,Defensa,1,2,0,0,2,Absorbe 6 de dano de asedio zombi,Fortificacion pesada contra ataques masivos,4
+H03,Refuerzo de Alambre,Defensa,1,0,0,0,1,+1 a las tiradas de dados de defensa este turno,Obstaculo rapido que ralentiza el avance,4
+H04,Puesto de Vigia,Defensa,1,1,0,0,1,Evita emboscadas y reduce en 1 el dano sorpresa,Torre de observacion perimetral,3
+H05,Disparo Coordinado,Ataque,1,0,0,0,1,Reduce en 2 el tamano de una horda entrante,Fuego defensivo con municion limitada,5
+H06,Trampa de Fuego,Ataque,1,1,0,0,2,Elimina 4 puntos de fuerza de una horda enemiga,Artefacto incendiario de alta letalidad,3
+H07,Contrataque Desesperado,Ataque,0,0,1,0,1,Tira 1 D6: en 3+ anula el ataque del Overlord este turno,Salida arriesgada fuera del muro,3
+H08,Saqueo Nocturno,Robo,0,0,0,0,2,Roba 2 recursos al azar de un asentamiento rival,Incursion sigilosa en territorio aliado,4
+H09,Infiltracion Silenciosa,Robo,0,0,0,0,1,Roba 1 carta de recursos de la mano de otro jugador,Hurto puntual de provisiones criticas,4
+H10,Desvio de Horda,Robo,1,0,0,0,2,Redirige el proximo ataque del Overlord hacia otra faccion,Traicion tactica para salvar el pellejo,3
+H11,Expedicion de Suministros,Recursos,0,0,1,0,1,Roba 3 cartas del mazo central de recursos,Busqueda en ruinas de la ciudad,6
+H12,Racionamiento Medico,Recursos,0,0,0,1,1,Cura 2 HP a la faccion o elimina 1 estado de Infeccion,Uso eficiente de botiquines y antibioticos,4
+H13,Almacen de Reserva,Recursos,2,1,0,0,2,Otorga +1 Comida y +1 Madera de inmediato,Gestion logistica dentro del refugio,3
+H14,Huerto Hidroponico,Recursos,2,0,1,0,2,Genera 1 Comida al inicio de cada ronda por 3 turnos,Produccion sustentable de alimentos,3

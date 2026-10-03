@@ -1,10 +1,10 @@
 id,nombre,tipo,costo_ap,efecto,requisito_superacion,descripcion,cantidad_mazo
-O01,Ola Polar de Invierno,Condicion_Global,2,Todas las facciones deben pagar 1 Madera o 1 Comida. Quien no pague pierde 2 HP.,1 Madera o 1 Comida,Frio glacial que congela los asentamientos y diezma defensas,3
-O02,Sequia y Plaga,Condicion_Global,2,El coste de curacion con Medicina se duplica durante este turno.,2 Medicina,Contaminacion de fuentes de agua dulce y suministros,2
-O03,Hambruna Zombi,Condicion_Global,2,El consumo de comida en mantenimiento sube a 2 de Comida por faccion.,2 Comida,Los cultivos son pisoteados forzando a recurrir a reservas,3
-O04,Niebla Densa,Condicion_Global,1,-1 a todas las tiradas de dados de los humanos hasta el proximo turno.,Ninguno,Perdida de visibilidad que dificulta la punteria de los vigias,3
-O05,Horda Boomer,Invocacion,3,Despliega horda de fuerza 5 sobre una faccion. Tira dado para penetracion.,Barricada nivel 2,Masa de infectados explosivos que embisten las murallas,4
-O06,Enjambre de Corredores,Invocacion,2,Ataca dos facciones simultaneamente infligiendo 2 de dano a cada una.,1 Barricada activa,Infectados veloces que flanquean las fortificaciones lentas,4
-O07,Mordida Venenosa,Ataque_Directo,2,Inflige 1 dano e Infeccion (pierde 1 HP por turno hasta usar 2 Medicina).,1 Medicina inmediata,Ataque quirurgico que contagia a un miembro clave de la faccion,4
-O08,Ariete Monstruoso,Ataque_Directo,2,Destruye completamente 1 estructura de madera o piedra.,Defensa critica en dado,Un zombi gigante destroza las defensas fisicas del perimetro,3
-O09,Frenesi de Sangre,Mejora,1,El proximo ataque del Overlord obtiene ventaja (+2 al resultado del dado).,Ninguno,El olor a sangre enfurece a la horda haciendola imparable,3
+O01,Ola Polar de Invierno,Condicion_Global,2,Todas las facciones deben pagar 1 Madera o 1 Comida. Quien no pague pierde 2 HP.,1 Madera o 1 Comida,Frio glacial que congela los asentamientos,3
+O02,Sequia y Escasez,Condicion_Global,2,El coste de curacion con Medicina se duplica durante este turno.,2 Medicina,Contaminacion de fuentes de agua dulce,3
+O03,Hambruna Zombi,Condicion_Global,2,El consumo de comida en mantenimiento sube a 2 de Comida por faccion.,2 Comida,Los suministros se pudren forzando mayor consumo,3
+O04,Niebla Cegadora,Condicion_Global,1,-1 a todas las tiradas de dados de los humanos hasta el proximo turno.,Ninguno,Perdida total de visibilidad,3
+O05,Horda Boomer,Condicion_Ataque,3,Despliega horda de fuerza 5 sobre una faccion. Tira dado para penetracion.,Defensa nivel 2,Infectados pesados que embisten murallas,4
+O06,Enjambre de Corredores,Condicion_Ataque,2,Ataca a dos facciones simultaneamente infligiendo 2 de dano a cada una.,1 Barricada activa,Zombis veloces que flanquean defensas,4
+O07,Mordida Infecciosa,Condicion_Ataque,2,Inflige 1 dano e Infeccion (pierde 1 HP por turno hasta usar 2 Medicina).,2 Medicina,Infeccion progresiva letal,4
+O08,Asedio de Demolicion,Condicion_Ataque,2,Destruye completamente 1 estructura defensiva de una faccion.,Defensa critica,Zombi blindado que rompe barricadas,3
+O09,Frenesi de Sangre,Condicion_Mejora,1,El proximo ataque del Overlord obtiene +2 al resultado del dado.,Ninguno,Horda enfurecida e imparable,3
