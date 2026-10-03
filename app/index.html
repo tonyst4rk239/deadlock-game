@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DEADLOCK - Gestor de Cartas y Prototipado</title>
+  <style>
+    :root {
+      --bg-dark: #0f111a;
+      --card-bg: #1a1d2e;
+      --accent-red: #e63946;
+      --accent-green: #2a9d8f;
+      --accent-yellow: #e9c46a;
+      --accent-blue: #457b9d;
+      --text-main: #edf2f4;
+      --text-muted: #8d99ae;
+      --border-color: #2b2d42;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; padding: 20px; }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 25px;
+    }
+
+    .logo { font-size: 1.8rem; font-weight: 800; letter-spacing: 2px; color: var(--accent-red); }
+    .logo span { color: var(--text-main); font-weight: 300; font-size: 1.1rem; margin-left: 10px; }
+
+    .nav-tabs { display: flex; gap: 10px; margin-bottom: 25px; }
+    .nav-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .nav-btn.active, .nav-btn:hover {
+      background: var(--accent-red);
+      color: white;
+      border-color: var(--accent-red);
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Form Styles */
+    .form-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      background: var(--card-bg);
+      padding: 25px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .form-group { margin-bottom: 15px; }
+    label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; color: var(--text-muted); }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      background: #121420;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: white;
+      font-size: 0.95rem;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent-red);
+    }
+    .cost-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+
+    .btn-submit {
+      background: var(--accent-green);
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 15px;
+      transition: opacity 0.2s;
+    }
+    .btn-submit:hover { opacity: 0.9; }
+
+    /* Card Visual Box */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .card-preview {
+      background: #181a27;
+      border: 2px solid #3d405b;
+      border-radius: 12px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 340px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+      position: relative;
+    }
+    .card-preview.overlord { border-color: var(--accent-red); }
+    .card-preview.human { border-color: var(--accent-blue); }
+
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
+    .card-id { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); }
+    .card-title { font-size: 1.1rem; font-weight: 700; margin-top: 2px; }
+    .badge-type {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-weight: bold;
+      background: #2b2d42;
+    }
+
+    .card-costs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin: 10px 0;
+      font-size: 0.8rem;
+    }
+    .cost-tag {
+      background: #10121a;
+      padding: 2px 7px;
+      border-radius: 4px;
+      border: 1px solid #2b2d42;
+      font-weight: 600;
+    }
+
+    .card-effect {
+      background: #0d0e15;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      border-left: 3px solid var(--accent-yellow);
+      flex-grow: 1;
+      margin-bottom: 10px;
+    }
+
+    .card-footer {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-style: italic;
+      border-top: 1px solid #2b2d42;
+      padding-top: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Print View */
+    @media print {
+      body { background: white; color: black; padding: 0; }
+      header, .nav-tabs, .form-container, button { display: none !important; }
+      .tab-content { display: block !important; }
+      .cards-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+      .card-preview {
+        background: white;
+        color: black;
+        border: 1.5px dashed black;
+        box-shadow: none;
+        page-break-inside: avoid;
+        height: 310px;
+      }
+      .card-effect { background: #f0f0f0; border-left: 3px solid black; color: black; }
+      .cost-tag { background: #eee; border: 1px solid #ccc; color: black; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">DEADLOCK <span>Card Manager & Prototype Hub</span></div>
+    <div>
+      <button class="nav-btn" onclick="window.print()" style="background: var(--accent-blue); color: white;">🖨️ Imprimir Cartas (Hoja de Recorte)</button>
+    </div>
+  </header>
+
+  <div class="nav-tabs">
+    <button class="nav-btn active" onclick="showTab('human-tab')">🃏 Mazo Humanos (<span id="count-human">0</span>)</button>
+    <button class="nav-btn" onclick="showTab('overlord-tab')">🩸 Mazo Overlord (<span id="count-overlord">0</span>)</button>
+    <button class="nav-btn" onclick="showTab('create-tab')">➕ Agregar Nueva Carta</button>
+    <button class="nav-btn" onclick="showTab('sim-tab')">🐍 Simulación de Balance</button>
+  </div>
+
+  <!-- TAB: MAZO HUMANOS -->
+  <div id="human-tab" class="tab-content active">
+    <div class="cards-grid" id="grid-human"></div>
+  </div>
+
+  <!-- TAB: MAZO OVERLORD -->
+  <div id="overlord-tab" class="tab-content">
+    <div class="cards-grid" id="grid-overlord"></div>
+  </div>
+
+  <!-- TAB: CREAR CARTA -->
+  <div id="create-tab" class="tab-content">
+    <div class="form-container">
+      <div>
+        <h2 style="margin-bottom: 20px;">Crear Carta de Humanos o Zombie</h2>
+        <div class="form-group">
+          <label>Mazo Destino</label>
+          <select id="card-deck" onchange="toggleFormFields()">
+            <option value="human">Facción Humana (Recursos / Acciones / Traición)</option>
+            <option value="overlord">Overlord (Zombie / Clima / Hordas)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Nombre de la Carta</label>
+          <input type="text" id="card-name" placeholder="Ej. Barricada de Púas" oninput="updateLivePreview()">
+        </div>
+
+        <div class="form-group">
+          <label>Tipo de Carta</label>
+          <select id="card-type" oninput="updateLivePreview()">
+            <option value="Estructura">Estructura / Muralla</option>
+            <option value="Accion">Acción General</option>
+            <option value="Ataque">Ataque</option>
+            <option value="Traicion">Traición / Saqueo</option>
+            <option value="Diplomacia">Diplomacia / Pacto</option>
+          </select>
+        </div>
+
+        <div id="human-costs">
+          <label>Costos de Recursos y AP</label>
+          <div class="cost-grid form-group">
+            <div><label>🪵 Madera</label><input type="number" id="c-wood" value="0" min="0" oninput="updateLivePreview()"></div>
+            <div><label>🪨 Piedra</label><input type="number" id="c-stone" value="0" min="0" oninput="updateLivePreview()"></div>
+            <div><label>🍞 Comida</label><input type="number" id="c-food" value="0" min="0" oninput="updateLivePreview()"></div>
+            <div><label>💊 Medicina</label><input type="number" id="c-med" value="0" min="0" oninput="updateLivePreview()"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>⚡ Costo de Puntos de Acción (AP)</label>
+          <input type="number" id="c-ap" value="1" min="0" max="4" oninput="updateLivePreview()">
+        </div>
+
+        <div class="form-group">
+          <label>Efecto Principal (Texto de Juego)</label>
+          <textarea id="card-effect" rows="2" placeholder="Ej. Absorbe 4 de daño en el próximo ataque nocturno." oninput="updateLivePreview()"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Descripción / Lore / Cantidad en Mazo</label>
+          <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 10px;">
+            <input type="text" id="card-desc" placeholder="Texto descriptivo o de ambientación" oninput="updateLivePreview()">
+            <input type="number" id="card-qty" value="3" min="1" placeholder="Cant.">
+          </div>
+        </div>
+
+        <button class="btn-submit" onclick="submitNewCard()">💾 Guardar Carta en el Repositorio</button>
+      </div>
+
+      <!-- Live Preview -->
+      <div>
+        <h3 style="margin-bottom: 20px; color: var(--text-muted);">Vista Previa en Vivo:</h3>
+        <div id="live-card-preview" class="card-preview human" style="max-width: 300px; margin: 0 auto;">
+          <div class="card-header">
+            <div>
+              <div class="card-id">NEW-01</div>
+              <div class="card-title" id="prev-name">Nombre de Carta</div>
+            </div>
+            <span class="badge-type" id="prev-type">Estructura</span>
+          </div>
+          <div class="card-costs" id="prev-costs">
+            <span class="cost-tag">⚡ 1 AP</span>
+          </div>
+          <div class="card-effect" id="prev-effect">Escribe el efecto de la carta para verlo aquí en tiempo real...</div>
+          <div class="card-footer">
+            <span id="prev-desc">Lore descriptivo...</span>
+            <span id="prev-qty">x3</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: SIMULACIÓN -->
+  <div id="sim-tab" class="tab-content">
+    <div style="background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color);">
+      <h2>Simulador Monte Carlo de Balance</h2>
+      <p style="color: var(--text-muted); margin: 10px 0 20px 0;">Ejecuta el script de Python <code>balance_model.py</code> directamente desde el servidor y evalúa las curvas de supervivencia.</p>
+      <button class="nav-btn active" onclick="runSimulation()" style="background: var(--accent-green);">▶️ Ejecutar Simulación (1,000 Partidas)</button>
+      <pre id="sim-output" style="margin-top: 20px; background: #0b0c12; padding: 20px; border-radius: 8px; color: #a8dadc; font-family: monospace; white-space: pre-wrap; font-size: 0.9rem;">Haz clic en 'Ejecutar Simulación' para obtener métricas...</pre>
+    </div>
+  </div>
+
+  <script>
+    let humanCards = [];
+    let overlordCards = [];
+
+    async function loadCards() {
+      try {
+        const res = await fetch('/api/cards');
+        const data = await res.json();
+        humanCards = data.human_cards || [];
+        overlordCards = data.overlord_cards || [];
+
+        document.getElementById('count-human').innerText = humanCards.length;
+        document.getElementById('count-overlord').innerText = overlordCards.length;
+
+        renderHumanGrid();
+        renderOverlordGrid();
+      } catch (err) {
+        console.error("Error al cargar cartas:", err);
+      }
+    }
+
+    function renderHumanGrid() {
+      const grid = document.getElementById('grid-human');
+      grid.innerHTML = humanCards.map(c => `
+        <div class="card-preview human">
+          <div class="card-header">
+            <div>
+              <div class="card-id">${c.id || ''}</div>
+              <div class="card-title">${c.nombre || ''}</div>
+            </div>
+            <span class="badge-type">${c.tipo || ''}</span>
+          </div>
+          <div class="card-costs">
+            <span class="cost-tag">⚡ ${c.costo_ap || 1} AP</span>
+            ${parseInt(c.costo_madera) > 0 ? `<span class="cost-tag">🪵 ${c.costo_madera}</span>` : ''}
+            ${parseInt(c.costo_piedra) > 0 ? `<span class="cost-tag">🪨 ${c.costo_piedra}</span>` : ''}
+            ${parseInt(c.costo_comida) > 0 ? `<span class="cost-tag">🍞 ${c.costo_comida}</span>` : ''}
+            ${parseInt(c.costo_medicina) > 0 ? `<span class="cost-tag">💊 ${c.costo_medicina}</span>` : ''}
+          </div>
+          <div class="card-effect">${c.efecto || ''}</div>
+          <div class="card-footer">
+            <span>${c.descripcion || ''}</span>
+            <span>x${c.cantidad_mazo || 1}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderOverlordGrid() {
+      const grid = document.getElementById('grid-overlord');
+      grid.innerHTML = overlordCards.map(c => `
+        <div class="card-preview overlord">
+          <div class="card-header">
+            <div>
+              <div class="card-id">${c.id || ''}</div>
+              <div class="card-title">${c.nombre || ''}</div>
+            </div>
+            <span class="badge-type" style="background: var(--accent-red);">${c.tipo || ''}</span>
+          </div>
+          <div class="card-costs">
+            <span class="cost-tag">⚡ ${c.costo_ap || 1} AP</span>
+            ${c.requisito_superacion ? `<span class="cost-tag" style="border-color: #e9c46a;">🛡️ ${c.requisito_superacion}</span>` : ''}
+          </div>
+          <div class="card-effect" style="border-left-color: var(--accent-red);">${c.efecto || ''}</div>
+          <div class="card-footer">
+            <span>${c.descripcion || ''}</span>
+            <span>x${c.cantidad_mazo || 1}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-tabs .nav-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    function toggleFormFields() {
+      const deck = document.getElementById('card-deck').value;
+      const humanCosts = document.getElementById('human-costs');
+      const typeSelect = document.getElementById('card-type');
+      const prevBox = document.getElementById('live-card-preview');
+
+      if (deck === 'human') {
+        humanCosts.style.display = 'block';
+        typeSelect.innerHTML = `
+          <option value="Estructura">Estructura / Muralla</option>
+          <option value="Accion">Acción General</option>
+          <option value="Ataque">Ataque</option>
+          <option value="Traicion">Traición / Saqueo</option>
+          <option value="Diplomacia">Diplomacia / Pacto</option>
+        `;
+        prevBox.className = "card-preview human";
+      } else {
+        humanCosts.style.display = 'none';
+        typeSelect.innerHTML = `
+          <option value="Condicion_Global">Condición Global (Clima/Hambruna)</option>
+          <option value="Invocacion">Invocación de Horda</option>
+          <option value="Ataque_Directo">Ataque Directo / Mordida</option>
+          <option value="Mejora">Mejora / Frenesí</option>
+        `;
+        prevBox.className = "card-preview overlord";
+      }
+      updateLivePreview();
+    }
+
+    function updateLivePreview() {
+      const name = document.getElementById('card-name').value || "Nombre de Carta";
+      const type = document.getElementById('card-type').value;
+      const ap = document.getElementById('c-ap').value || 1;
+      const effect = document.getElementById('card-effect').value || "Escribe el efecto para previsualizarlo...";
+      const desc = document.getElementById('card-desc').value || "Lore o notas...";
+      const qty = document.getElementById('card-qty').value || 1;
+
+      document.getElementById('prev-name').innerText = name;
+      document.getElementById('prev-type').innerText = type;
+      document.getElementById('prev-effect').innerText = effect;
+      document.getElementById('prev-desc').innerText = desc;
+      document.getElementById('prev-qty').innerText = "x" + qty;
+
+      const deck = document.getElementById('card-deck').value;
+      let costTags = `<span class="cost-tag">⚡ ${ap} AP</span>`;
+      if (deck === 'human') {
+        const w = parseInt(document.getElementById('c-wood').value) || 0;
+        const s = parseInt(document.getElementById('c-stone').value) || 0;
+        const f = parseInt(document.getElementById('c-food').value) || 0;
+        const m = parseInt(document.getElementById('c-med').value) || 0;
+        if (w > 0) costTags += ` <span class="cost-tag">🪵 ${w}</span>`;
+        if (s > 0) costTags += ` <span class="cost-tag">🪨 ${s}</span>`;
+        if (f > 0) costTags += ` <span class="cost-tag">🍞 ${f}</span>`;
+        if (m > 0) costTags += ` <span class="cost-tag">💊 ${m}</span>`;
+      }
+      document.getElementById('prev-costs').innerHTML = costTags;
+    }
+
+    async function submitNewCard() {
+      const deck = document.getElementById('card-deck').value;
+      const name = document.getElementById('card-name').value.trim();
+      const effect = document.getElementById('card-effect').value.trim();
+      if (!name || !effect) {
+        alert("Por favor ingresa al menos un Nombre y un Efecto.");
+        return;
+      }
+
+      let payload = {};
+      let endpoint = "";
+
+      if (deck === 'human') {
+        endpoint = "/api/cards/human";
+        payload = {
+          nombre: name,
+          tipo: document.getElementById('card-type').value,
+          costo_madera: document.getElementById('c-wood').value || "0",
+          costo_piedra: document.getElementById('c-stone').value || "0",
+          costo_comida: document.getElementById('c-food').value || "0",
+          costo_medicina: document.getElementById('c-med').value || "0",
+          costo_ap: document.getElementById('c-ap').value || "1",
+          efecto: effect,
+          descripcion: document.getElementById('card-desc').value || "",
+          cantidad_mazo: document.getElementById('card-qty').value || "3"
+        };
+      } else {
+        endpoint = "/api/cards/overlord";
+        payload = {
+          nombre: name,
+          tipo: document.getElementById('card-type').value,
+          costo_ap: document.getElementById('c-ap').value || "1",
+          efecto: effect,
+          requisito_superacion: "",
+          descripcion: document.getElementById('card-desc').value || "",
+          cantidad_mazo: document.getElementById('card-qty').value || "3"
+        };
+      }
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          alert("¡Carta guardada exitosamente en la base de datos y CSV!");
+          document.getElementById('card-name').value = "";
+          document.getElementById('card-effect').value = "";
+          document.getElementById('card-desc').value = "";
+          loadCards();
+          showTab(deck === 'human' ? 'human-tab' : 'overlord-tab');
+        } else {
+          alert("Hubo un error al guardar la carta.");
+        }
+      } catch (e) {
+        alert("Error de conexión con el servidor.");
+      }
+    }
+
+    async function runSimulation() {
+      const out = document.getElementById('sim-output');
+      out.innerText = "⏳ Ejecutando 1,000 partidas de simulación Monte Carlo...";
+      try {
+        const res = await fetch('/api/simulate');
+        const data = await res.json();
+        out.innerText = data.output || "Simulación completada.";
+      } catch (e) {
+        out.innerText = "Error al comunicarse con el simulador.";
+      }
+    }
+
+    window.onload = loadCards;
+  </script>
+</body>
+</html>
